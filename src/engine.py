@@ -29,7 +29,8 @@ class OllamaEngine:
                 "openai_input": {
                     "model": model,
                     "prompt": job_input.llm_input,
-                    "stream": job_input.stream
+                    "stream": job_input.stream,
+                    **({"format": job_input.format} if job_input.format else {})
                 }
             })
         else:
@@ -39,7 +40,8 @@ class OllamaEngine:
                 "openai_input": {
                     "model": model,
                     "messages": job_input.llm_input,
-                    "stream": job_input.stream
+                    "stream": job_input.stream,
+                    **({"format": job_input.format} if job_input.format else {})
                 }
             })
 
@@ -87,11 +89,14 @@ class OllamaOpenAiEngine(OllamaEngine):
 
     async def _handle_chat_or_completion_request(self, openai_input, chat=False):
         try:
+            ollama_format = openai_input.pop("format", None)
+            extra_body = {"format": ollama_format} if ollama_format else {}
+
             # Call openai.chat.completions.create or openai.completions.create based on the route
             if chat:
-                response = client.chat.completions.create(**openai_input)
+                response = client.chat.completions.create(**openai_input, extra_body=extra_body)
             else:
-                response = client.completions.create(**openai_input)
+                response = client.completions.create(**openai_input, extra_body=extra_body)
 
             # If streaming is False, we can just return the response
             if not openai_input.get("stream", False):
