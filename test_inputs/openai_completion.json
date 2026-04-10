@@ -3,16 +3,8 @@
         "openai_route": "/v1/completions",
         "openai_input": {
             "model": "llama3.2:1b",
-            "prompt": "Return a JSON object describing yourself with a name and age.",
-            "max_tokens": 60,
-            "format": {
-                "type": "object",
-                "properties": {
-                    "name": { "type": "string" },
-                    "age": { "type": "number" }
-                },
-                "required": ["name", "age"]
-            }
+            "prompt": "How are you?",
+            "max_tokens": 60
         }
     }
 }
